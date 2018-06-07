@@ -1,6 +1,6 @@
 "use strict";
 
-;window.pictures = (function() {
+;(function() {
     let comments = ['Всё отлично!', 
                     'В целом всё неплохо. Но не всё.', 
                     'Когда  вы  делаете  фотографию,  хорошо  бы  убирать  палец  из кадра. В конце концов это просто непрофессионально.', 
@@ -12,10 +12,10 @@
     // функция генерации рандомных комментариев
 
     function getRandomComments() {
-        let count = window.commons.getRandom(1, 2);
+        let count = window.keks.commons.getRandom(1, 2);
         let randomComments = [];
         for (let i = 0; i < count; i++) {
-            randomComments.push(comments[window.commons.getRandom(0, comments.length - 1)]);
+            randomComments.push(comments[window.keks.commons.getRandom(0, comments.length - 1)]);
         }
         return randomComments;
     }
@@ -26,7 +26,7 @@
         for (let i = 0; i < 25; i++) {
             generatedPictures[i] = {
                 url: `photos/${i + 1}.jpg`,
-                likes: window.commons.getRandom(15, 200),
+                likes: window.keks.commons.getRandom(15, 200),
                 comments: getRandomComments()
             };
         }
@@ -49,6 +49,7 @@
 
     function renderPictures() {
         generatePictures();
+        generatedPictures.sort(window.keks.commons.randomSort);
         let pictureFragment = document.createDocumentFragment();
         for (let i = 0; i < generatedPictures.length; i++) {
             let picture = createPictureObjects(generatedPictures[i]);
@@ -61,10 +62,53 @@
 
     let overlayPicture = document.querySelector('.gallery-overlay');
     let overlayImage = overlayPicture.querySelector('.gallery-overlay-image');
-    let overlayLikes = overlayPicture.querySelector('.gallery-overlay-controls-like');
-    let overlayComments = overlayPicture.querySelector('.gallery-overlay-controls-comments');
+    let overlayLikes = overlayPicture.querySelector('.likes-count');
+    let overlayComments = overlayPicture.querySelector('.comments-count');
+    let closeButton = overlayPicture.querySelector('.gallery-overlay-close');
+    closeButton.setAttribute('tabindex', 0);
 
-    overlayImage.src = generatedPictures[0].url;
-    overlayLikes.textContent = generatedPictures[0].likes;
-    overlayComments.textContent = generatedPictures[0].comments.length;
+    // функция открытия поп-апа с изображением; @evt = event
+
+    function openPopup (evt) {
+        evt.preventDefault();
+        if (!evt.target.classList.contains('pictures')) {
+             overlayImage.src = evt.target.parentNode.querySelector('img').src;
+             overlayLikes.textContent = evt.target.parentNode.querySelector('.picture-likes').textContent;
+             overlayComments.textContent = evt.target.parentNode.querySelector('.picture-comments').textContent;
+             overlayPicture.classList.remove('hidden');
+             document.addEventListener('keydown', closeOnEscPress);
+             closeButton.addEventListener('click', closePopup);
+             closeButton.addEventListener('keydown', closeOnEnterPress);
+        }
+    }
+
+    // функция закрытия поп-апа с изображением; @evt = event
+
+    function closePopup(evt) {
+        evt.preventDefault();
+        overlayPicture.classList.add('hidden');
+        document.removeEventListener('keydown', closeOnEscPress);
+        closeButton.removeEventListener('click', closePopup);
+        closeButton.removeEventListener('keydown', closeOnEnterPress);
+    }
+
+    // функция закрытия поп-апа с изображением по нажатию Esc; @keyEvt = event
+
+    function closeOnEscPress(keyEvt) {
+        if (window.keks.commons.onEscPress(keyEvt)) {
+            keyEvt.preventDefault();
+            closePopup(keyEvt);
+        }
+    }
+
+    // функция закрытия поп-апа с изображением по нажатию на крестик Enter'ом; @keyEvt = event
+
+    function closeOnEnterPress(keyEvt) {
+        if (window.keks.commons.onEnterPress(keyEvt)) {
+            closePopup(keyEvt);
+        }
+    }
+
+    picturesContainer.addEventListener('click', openPopup);
+    
 })();

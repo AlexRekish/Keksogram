@@ -1,5 +1,6 @@
+import {validation} from './validation';
 "use strict";
-(function(){
+export let form = (function(){
     let uploadForm = document.querySelector('.upload-form');
     let uploadImageField = uploadForm.querySelector('#upload-file');
     let filtersForm = document.querySelector('.filters');
@@ -11,17 +12,27 @@
     let resizeValue = uploadForm.querySelector('.upload-resize-controls-value');
     let previewImage = uploadForm.querySelector('.effect-image-preview');
     let effectControls = uploadForm.querySelector('.upload-effect-controls');
+    let closeUploadOverlay = uploadOverlay.querySelector('.upload-form-cancel');
     const RESIZE_STEP = 25;
     const RESIZE_MIN = 25;
     const RESIZE_MAX = 100;
 
-    uploadImageField.addEventListener('change', showUploadForm);
+    uploadForm.setAttribute('action', 'https://js.dump.academy/kekstagram');
+    uploadImageField.addEventListener('change', evt => {
+        if(validation.checkFileType(uploadImageField)) {
+            showUploadForm() 
+        } else alert('Неверный тип файла! Допускаются только JPEG изображения!');
+    }
+    );
+
+    uploadForm.addEventListener('submit', evt => {
+        uploadForm.reset();
+    });
    
     // функция показа настроек загружаемого изображения; @evt = event
 
     function showUploadForm(evt) {
        uploadOverlay.classList.remove('hidden');
-       let closeUploadOverlay = uploadOverlay.querySelector('.upload-form-cancel');
        closeUploadOverlay.addEventListener('click', closeUploadForm);
        document.addEventListener('keydown', cancelUploadOnEsc);
     }
@@ -38,7 +49,7 @@
     // функция закрытия настроек загружаемого изображения клавишей Esc; @keyEvt = event
 
     function cancelUploadOnEsc(keyEvt) {
-        if (window.keks.commons.onEscPress(keyEvt) && (commentsArea !== document.activeElement)) {
+        if (commons.onEscPress(keyEvt) && (commentsArea !== document.activeElement)) {
             keyEvt.preventDefault();
             closeUploadForm(keyEvt);
         }
@@ -89,46 +100,7 @@
         previewImage.style.filter = filters[filter];
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return {
+        uploadImageField
+    }
 })();

@@ -1,6 +1,6 @@
 "use strict";
-;window.keks = {};
-(function() {
+window.keks = {};
+export let commons = (function() {
     const ESC_KEYCODE = 27;
     const ENTER_KEYCODE = 13;
 
@@ -28,12 +28,10 @@
     function onEnterPress(keyEvt) {
         return (keyEvt.keyCode === ENTER_KEYCODE);
     }
-
-    return window.keks.commons = {
+    return {
         randomSort,
         getRandom,
         onEnterPress,
         onEscPress
     };
-
 })();

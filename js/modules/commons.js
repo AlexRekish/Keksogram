@@ -1,8 +1,9 @@
-"use strict";
-window.keks = {};
-export let commons = (function() {
+;"use strict";
+export const commons = (function() {
     const ESC_KEYCODE = 27;
     const ENTER_KEYCODE = 13;
+    const RIGHT_KEYCODE = 39;
+    const LEFT_KEYCODE = 37;
 
     // рандомайзер значений в заданном диапазоне 
 
@@ -28,10 +29,24 @@ export let commons = (function() {
     function onEnterPress(keyEvt) {
         return (keyEvt.keyCode === ENTER_KEYCODE);
     }
+
+     // функция сравнения нажатой клавиши с Right; @keyEvt = event;
+
+    function onRightPress(keyEvt) {
+        return (keyEvt.keyCode === RIGHT_KEYCODE);
+    }
+
+     // функция сравнения нажатой клавиши с Left; @keyEvt = event;
+
+    function onLeftPress(keyEvt) {
+        return (keyEvt.keyCode === LEFT_KEYCODE);
+    }
     return {
         randomSort,
         getRandom,
         onEnterPress,
-        onEscPress
+        onEscPress,
+        onLeftPress,
+        onRightPress
     };
 })();

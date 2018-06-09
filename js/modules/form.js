@@ -1,37 +1,38 @@
+;"use strict";
 import {validation} from './validation';
-"use strict";
-export let form = (function(){
+import {commons} from './commons';
+export const form = (function(){
     let uploadForm = document.querySelector('.upload-form');
     let uploadImageField = uploadForm.querySelector('#upload-file');
-    let filtersForm = document.querySelector('.filters');
     let uploadOverlay = uploadForm.querySelector('.upload-overlay');
     let commentsArea = uploadForm.querySelector('.upload-form-description');
-    let resizeContainer = uploadForm.querySelector('.upload-resize-controls');
     let decResizeButton = uploadForm.querySelector('.upload-resize-controls-button-dec');
     let incResizeButton = uploadForm.querySelector('.upload-resize-controls-button-inc');
     let resizeValue = uploadForm.querySelector('.upload-resize-controls-value');
     let previewImage = uploadForm.querySelector('.effect-image-preview');
     let effectControls = uploadForm.querySelector('.upload-effect-controls');
     let closeUploadOverlay = uploadOverlay.querySelector('.upload-form-cancel');
+    let preview = uploadForm.querySelector('.effect-image-preview');
     const RESIZE_STEP = 25;
     const RESIZE_MIN = 25;
     const RESIZE_MAX = 100;
 
     uploadForm.setAttribute('action', 'https://js.dump.academy/kekstagram');
-    uploadImageField.addEventListener('change', evt => {
+    uploadImageField.addEventListener('change', () => {
         if(validation.checkFileType(uploadImageField)) {
-            showUploadForm() 
-        } else alert('Неверный тип файла! Допускаются только JPEG изображения!');
+            let reader = new FileReader();
+            reader.addEventListener('load', () => {
+            preview.src = reader.result;
+            });
+            reader.readAsDataURL(uploadImageField.files[0]);
+            showUploadForm(); 
+        } else alert('Неверный тип файла! Допустимо использовать только .jpg или .png изображения!');
     }
     );
-
-    uploadForm.addEventListener('submit', evt => {
-        uploadForm.reset();
-    });
    
-    // функция показа настроек загружаемого изображения; @evt = event
+    // функция показа настроек загружаемого изображения;
 
-    function showUploadForm(evt) {
+    function showUploadForm() {
        uploadOverlay.classList.remove('hidden');
        closeUploadOverlay.addEventListener('click', closeUploadForm);
        document.addEventListener('keydown', cancelUploadOnEsc);
@@ -102,5 +103,5 @@ export let form = (function(){
 
     return {
         uploadImageField
-    }
+    };
 })();

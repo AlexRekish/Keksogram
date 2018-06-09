@@ -1,5 +1,5 @@
-"use strict";
-export let validation = (function () {
+;"use strict";
+export const validation = (function () {
     let hashTag = document.querySelector('.upload-form-hashtags');
     const MAX_LENGTH = 20;
     const MIN_LENGTH = 2;
@@ -16,7 +16,7 @@ export let validation = (function () {
 
     let timerId;
 
-    hashTag.addEventListener('input', evt => {
+    hashTag.addEventListener('input', () => {
         let hash = hashTag.value.toLowerCase().trim().split(' ');
         clearTimeout(timerId);
         timerId = setTimeout(() => {
@@ -24,7 +24,7 @@ export let validation = (function () {
         }, 2000);
     });
 
-    //функция проверки первого символа хэштега
+    //функция проверки первого символа хэштега; @hashArray - массив введенных хэштегов
 
     function checkFirstChar(hashArray) {
         return hashArray.every(current => {
@@ -32,7 +32,7 @@ export let validation = (function () {
         });
     }
 
-    //функция проверки уникальности введенного хэштега
+    //функция проверки уникальности введенного хэштега; @hashArray - массив введенных хэштегов
 
     function checkUnique(hashArray) {
         return hashArray.every((current, index) => {
@@ -40,7 +40,7 @@ export let validation = (function () {
         })
     }
 
-    //функция проверки длины введенного хэштега
+    //функция проверки длины введенного хэштега; @hashArray - массив введенных хэштегов
 
     function checkTooShort(hashArray) {
         return hashArray.every(current => {
@@ -48,7 +48,7 @@ export let validation = (function () {
         })
     }
 
-    //функция проверки длины введенного хэштега
+    //функция проверки длины введенного хэштега; @hashArray - массив введенных хэштегов
 
     function checkTooLong(hashArray) {
         return hashArray.every(current => {
@@ -56,7 +56,7 @@ export let validation = (function () {
         })
     }
 
-    //общая функция проверки введенных хэштегов
+    //общая функция проверки введенных хэштегов; @hashArray - массив введенных хэштегов
 
     function checkValid(hashArray) {
         let errorMessage = '';
@@ -79,13 +79,15 @@ export let validation = (function () {
         hashTag.setCustomValidity(errorMessage);
     }
     
-    //функция проверки загружаемого файла
+    //функция проверки загружаемого файла; @file - input type="file"
 
     function checkFileType(file) {
-        if (file.files[0].type !== 'image/jpeg') {
-            file.setCustomValidity('Неверный тип изображения! Допустимо использовать только JPEG!');
-            return false;
-        } return true;
+        const FILE_TYPES = ['image/jpeg', 'image/png'];
+        if (file.files[0]) {
+            let fileType = file.files[0].type.toLowerCase();
+            return FILE_TYPES.some((type) => fileType === type);
+        }
+        return false;
     }
 
     return {

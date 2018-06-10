@@ -9,12 +9,12 @@ export const data = (function() {
         'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент ?!'
     ];
     let generatedPictures = [];
-    let XHR = new XMLHttpRequest();
+    let randomPictures = generatedPictures.slice();
 
     // функция генерации рандомных комментариев
 
     function getRandomComments() {
-        let count = commons.getRandom(1, 2);
+        let count = commons.getRandom(1, 30);
         let randomComments = [];
         for (let i = 0; i < count; i++) {
             randomComments.push(comments[commons.getRandom(0, comments.length - 1)]);
@@ -34,8 +34,32 @@ export const data = (function() {
         }
     }
 
+    function getPopularPictures() {
+        let popularPictures = generatedPictures.slice();
+        return popularPictures.sort((a, b) => {
+            return b.likes - a.likes;
+        });
+    }
+
+    function getDicsussedPictures() {
+        let discussedPictures = generatedPictures.slice();
+        return discussedPictures.sort((a, b) => {
+            return b.comments.length - a.comments.length;
+        });
+    }
+
+    function getRandomPictures() {
+        let randomPictures = generatedPictures.slice();
+        return randomPictures.sort(commons.randomSort);
+    }
+
+    generatePictures();
+
     return {
         generatedPictures,
-        generatePictures
+        generatePictures,
+        getPopularPictures,
+        getDicsussedPictures,
+        getRandomPictures
     };
 })();

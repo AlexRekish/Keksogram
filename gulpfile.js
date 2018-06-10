@@ -29,7 +29,7 @@ gulp.task('html', function() {
 });
 
 gulp.task('webpack', function () {
-	return gulp.src('js/modules/pictures.js')
+	return gulp.src('js/modules/filters.js')
 		.pipe(webpack({
 			output: {
 				filename: 'scripts.min.js',

@@ -1,10 +1,9 @@
 ;"use strict";
-import {commons} from './commons';
 import {gallery} from './gallery';
 import {data} from './data';
 import {form} from './form';
 
-(function() {
+export const pictures = (function() {
     let pictureTemplate = document.querySelector('#picture-template').content.querySelector('.picture');
     let picturesContainer = document.querySelector('.pictures');
     
@@ -20,16 +19,19 @@ import {form} from './form';
 
     //функция отрисовки фото на страницы
 
-    function renderPictures() {
-        data.generatePictures();
-        data.generatedPictures.sort(commons.randomSort);
+    function renderPictures(array) {
         let pictureFragment = document.createDocumentFragment();
-        data.generatedPictures.forEach(current => {
+        array.forEach(current => {
             pictureFragment.appendChild(createPictureObjects(current));
         }); 
         picturesContainer.appendChild(pictureFragment);
     }
 
-    renderPictures();
+    renderPictures(data.generatedPictures);
     picturesContainer.addEventListener('click', gallery.openPopup);
+
+    return {
+        renderPictures,
+        picturesContainer
+    }
 })();

@@ -1,6 +1,8 @@
 ;"use strict";
 import {validation} from './validation';
 import {commons} from './commons';
+import {slider} from './slider';
+import {backend} from './backend';
 export const form = (function(){
     let uploadForm = document.querySelector('.upload-form');
     let uploadImageField = uploadForm.querySelector('#upload-file');
@@ -13,6 +15,7 @@ export const form = (function(){
     let effectControls = uploadForm.querySelector('.upload-effect-controls');
     let closeUploadOverlay = uploadOverlay.querySelector('.upload-form-cancel');
     let preview = uploadForm.querySelector('.effect-image-preview');
+    let scaleContainer = document.querySelector('.upload-effect-level');
     const RESIZE_STEP = 25;
     const RESIZE_MIN = 25;
     const RESIZE_MAX = 100;
@@ -26,25 +29,30 @@ export const form = (function(){
             });
             reader.readAsDataURL(uploadImageField.files[0]);
             showUploadForm(); 
-        } else alert('Неверный тип файла! Допустимо использовать только .jpg или .png изображения!');
+        } else {
+            alert('Неверный тип файла! Допустимо использовать только .jpg или .png изображения!');
+            uploadImageField.setCustomValidity('Неверный тип файла! Допустимо использовать только .jpg или .png изображения!');
+        }
     }
     );
    
     // функция показа настроек загружаемого изображения;
 
     function showUploadForm() {
-       uploadOverlay.classList.remove('hidden');
-       closeUploadOverlay.addEventListener('click', closeUploadForm);
-       document.addEventListener('keydown', cancelUploadOnEsc);
+        scaleContainer.classList.add('hidden');
+        uploadOverlay.classList.remove('hidden');
+        closeUploadOverlay.addEventListener('click', closeUploadForm);
+        document.addEventListener('keydown', cancelUploadOnEsc);
     }
 
     // функция закрытия настроек загружаемого изображения; @evt = event
 
-    function closeUploadForm(evt) {
-        evt.preventDefault();
+    function closeUploadForm() {
         uploadOverlay.classList.add('hidden');
         closeUploadOverlay.removeEventListener('click', closeUploadForm);
         document.removeEventListener('keydown', cancelUploadOnEsc);
+        uploadForm.reset();
+        previewImage.style = 'none';
     }
 
     // функция закрытия настроек загружаемого изображения клавишей Esc; @keyEvt = event
@@ -52,7 +60,7 @@ export const form = (function(){
     function cancelUploadOnEsc(keyEvt) {
         if (commons.onEscPress(keyEvt) && (commentsArea !== document.activeElement)) {
             keyEvt.preventDefault();
-            closeUploadForm(keyEvt);
+            closeUploadForm();
         }
     }
 
@@ -84,24 +92,45 @@ export const form = (function(){
 
     effectControls.addEventListener('change', setImageFilter);
 
-    // функция настройки фильтра загружаемого изображения; @evt = event
+    // функция выбора фильтра загружаемого изображения; @evt = event
 
     function setImageFilter(evt) {
-        let filterValue = 75;
-        let filter = evt.target.value;
+        let effect = evt.target.value;
+        slider.pin.style = 'none';
+        slider.scaleActive.style = 'none';
+        slider.shift = 25;
+        evt.target.classList.add(`filter-${effect}`); 
+        changeImageFilterValue();
+    }
+
+    // функция настройки фильтра загружаемого изображения
+
+    function changeImageFilterValue() {
+        let filterValue = slider.shift;
+        let target = uploadForm.querySelector('input[name=effect]:checked');
+        let filter = target.value;
         let filters = {
             none: `none`,
-            chrome : `grayscale(${filterValue}%)`,
-            sepia : `sepia(${filterValue}%)`,
-            marvin : `invert(${filterValue}%)`,
-            phobos : `blur(${filterValue / 10}px)`,
-            heat : `brightness(${filterValue + 50}%)`
+            chrome: `grayscale(${filterValue / 100})`,
+            sepia: `sepia(${filterValue / 100})`,
+            marvin: `invert(${filterValue}%)`,
+            phobos: `blur(${filterValue / 100 * 3}px)`,
+            heat: `brightness(${filterValue / 100 * 3})`
         };
-        evt.target.style.filter = 'none'; 
+
+        filter !== 'none' ? scaleContainer.classList.remove('hidden') : scaleContainer.classList.add('hidden');
+        target.style.filter = 'none'; 
         previewImage.style.filter = filters[filter];
     }
 
+    uploadForm.addEventListener('submit', evt => {
+        evt.preventDefault();
+        backend.uploadForm(new FormData(uploadForm), backend.onLoad, backend.onError);
+        closeUploadForm();
+    });
+
     return {
-        uploadImageField
+        uploadImageField,
+        changeImageFilterValue
     };
 })();

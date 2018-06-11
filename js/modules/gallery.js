@@ -62,7 +62,7 @@ export const gallery = (function() {
         }
     }
 
-    // функция перелистывания изображений поп-апа кликом мыши
+    // функция перелистывания изображений поп-апа кликом мыши; @overlayEvt = event
 
     function switchImage(overlayEvt) {
         overlayEvt.preventDefault();
@@ -99,7 +99,7 @@ export const gallery = (function() {
         targetImage = prevLink.querySelector('img');
     }
 
-    // функция перелистывания изображений поп-апа вправо клавишей right
+    // функция перелистывания изображений поп-апа вправо клавишей right; @keyEvt = event
 
     function arrowNext(keyEvt) {
         keyEvt.preventDefault();
@@ -108,7 +108,7 @@ export const gallery = (function() {
         }
     }
 
-    // функция перелистывания изображений поп-апа влево клавишей left
+    // функция перелистывания изображений поп-апа влево клавишей left; @keyEvt = event
 
     function arrowPrev(keyEvt) {
         keyEvt.preventDefault();

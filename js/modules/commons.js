@@ -18,6 +18,7 @@ export const commons = (function() {
     function randomSort() {
         return Math.random() - 0.5;
     }
+
     // функция сравнения нажатой клавиши с Esc; @keyEvt = event;
 
     function onEscPress(keyEvt) {
@@ -41,6 +42,7 @@ export const commons = (function() {
     function onLeftPress(keyEvt) {
         return (keyEvt.keyCode === LEFT_KEYCODE);
     }
+    
     return {
         randomSort,
         getRandom,

@@ -125,7 +125,7 @@ export const form = (function(){
 
     uploadForm.addEventListener('submit', evt => {
         evt.preventDefault();
-        backend.uploadForm(new FormData(uploadForm), backend.onLoad, backend.onError);
+        backend.uploadForm(new FormData(uploadForm), backend.onError);
         closeUploadForm();
     });
 

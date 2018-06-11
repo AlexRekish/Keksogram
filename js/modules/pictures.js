@@ -1,6 +1,5 @@
 ;"use strict";
 import {gallery} from './gallery';
-import {data} from './data';
 import {form} from './form';
 
 export const pictures = (function() {
@@ -17,7 +16,7 @@ export const pictures = (function() {
         return pictureElement;
     }
 
-    //функция отрисовки фото на страницы
+    //функция отрисовки фото на страницу; @array - отсортированный массив объектов с фото 
 
     function renderPictures(array) {
         let pictureFragment = document.createDocumentFragment();
@@ -27,7 +26,6 @@ export const pictures = (function() {
         picturesContainer.appendChild(pictureFragment);
     }
 
-    renderPictures(data.generatedPictures);
     picturesContainer.addEventListener('click', gallery.openPopup);
 
     return {

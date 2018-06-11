@@ -11,8 +11,10 @@ export const filters = (function() {
         clearTimeout(timerId);
         timerId = setTimeout(() => {
         setPictureSort();
-        }, 500)
+        }, 300)
     });
+
+    // функция сортировки изображений в зависимости от выбранного фильтра сортировки
 
     function setPictureSort() {
         let filter = document.querySelector('input[name = filter]:checked').value;
@@ -25,4 +27,8 @@ export const filters = (function() {
        picturesContainer.innerHTML = '';
        pictures.renderPictures(pictureFilters[filter]);
     }
+    
+    return {
+        setPictureSort
+    };
 })();
